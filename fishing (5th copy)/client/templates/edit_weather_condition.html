@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать условия погоды</title>
+    <button onclick="window.history.back()">Назад</button>
+</head>
+<body>
+    <h1>Редактировать условия погоды</h1>
+    <form method="POST">
+        <label for="condition_name">Название:</label>
+        <input type="text" id="condition_name" name="condition_name" value="{{ condition.name }}" required>
+        <button type="submit">Сохранить изменения</button>
+    </form>
+    <form method="POST" action="{{ url_for('delete_weather_condition', condition_id=condition.id) }}">
+        <button type="submit">Удалить условия погоды</button>
+    </form>
+</body>
+</html>
+

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание отчета (Админ)</title>
+</head>
+<body>
+    <a href="{{ url_for('index') }}">На главную</a>
+
+    <h2>Создать новый отчет (Админ)</h2>
+    <form id="reportForm" method="POST">
+        <label for="captain">Капитан:</label>
+        <select id="captain" name="captain" required>
+            {% for captain in captains.results %}
+                <option value="{{ captain.id }}">{{ captain.full_name }}</option>
+            {% endfor %}
+        </select>
+        <br>
+
+        <label for="fishermen">Рыболовы:</label>
+        <select id="fishermen" name="fishermen" multiple required style="width: 200px;">
+            {% for fisherman in fishermen.results %}
+                <option value="{{ fisherman.id }}">{{ fisherman.full_name }}</option>
+            {% endfor %}
+        </select>
+        <br>
+
+        <label for="ship">Корабль:</label>
+        <select id="ship" name="ship" required>
+            {% for ship in ships.results %}
+                <option value="{{ ship.id }}">{{ ship.name }}</option>
+            {% endfor %}
+        </select>
+        <br>
+
+        <label for="fishes">Рыбы и их веса:</label>
+        <div id="fish_weights">
+            <div>
+                <select name="fishes" required>
+                    {% for fish in fish.results %}
+                        <option value="{{ fish.id }}">{{ fish.name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="number" name="weights" placeholder="Вес" required>
+            </div>
+        </div>
+        <button type="button" onclick="addFishWeight()">Добавить рыбу</button>
+        <br>
+
+        <label for="start_date">Дата начала:</label>
+        <input type="date" id="start_date" name="start_date" required>
+        <br>
+
+        <label for="end_date">Дата завершения:</label>
+        <input type="date" id="end_date" name="end_date" required>
+        <br>
+
+        <label for="weather_conditions">Условия погоды:</label>
+        <select id="weather_conditions" name="weather_conditions" required>
+            {% for condition in weather_conditions.results %}
+                <option value="{{ condition.id }}">{{ condition.name }}</option>
+            {% endfor %}
+        </select>
+        <br>
+
+        <button type="submit">Создать отчет</button>
+    </form>
+
+    <!-- JavaScript для обработки формы -->
+    <script>
+        document.querySelector('form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = {
+                captain: parseInt(document.querySelector("#captain").value),
+                fishermen: Array.from(document.querySelectorAll("#fishermen option:checked")).map(option => parseInt(option.value)),
+                ship: parseInt(document.querySelector("#ship").value),
+                start_date: document.querySelector("#start_date").value,
+                end_date: document.querySelector("#end_date").value,
+                weather_conditions: parseInt(document.querySelector("#weather_conditions").value),
+                fish_catches: []
+            };
+
+            const fishSelects = document.querySelectorAll('select[name="fishes"]');
+            const weightInputs = document.querySelectorAll('input[name="weights"]');
+
+            fishSelects.forEach((select, index) => {
+                formData.fish_catches.push({
+                    fish_id: parseInt(select.value),
+                    weight: parseFloat(weightInputs[index].value)
+                });
+            });
+
+            fetch('/reports', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log('Ответ от сервера:', data);
+
+                try {
+                    const jsonData = JSON.parse(data);
+                    if (jsonData.success) {
+                        alert("Отчет успешно создан");
+                        window.location.href = '/reports';
+                    } else if (jsonData.error) {
+                        alert("Ошибка: " + jsonData.error);
+                    } else {
+                        alert("Неизвестный ответ сервера");
+                    }
+                } catch (error) {
+                    console.error('Ошибка парсинга JSON:', error);
+                    alert("Ошибка при обработке ответа сервера");
+                }
+            })
+            .catch(error => console.error('Ошибка:', error));
+        });
+
+        function addFishWeight() {
+            const fishWeightsDiv = document.getElementById('fish_weights');
+            const newFishWeightDiv = document.createElement('div');
+
+            newFishWeightDiv.innerHTML = `
+                <select name="fishes" required>
+                    {% for fish in fish.results %}
+                        <option value="{{ fish.id }}">{{ fish.name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="number" name="weights" placeholder="Вес" required>
+            `;
+
+            fishWeightsDiv.appendChild(newFishWeightDiv);
+        }
+    </script>
+</body>
+</html>
+

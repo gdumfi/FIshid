@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать отчет</title>
+    <button onclick="window.history.back()">Назад</button>
+</head>
+<body>
+    <h1>Редактировать отчет</h1>
+
+    <form id="reportForm" method="POST">
+        <label for="captain">Капитан:</label>
+        <select id="captain" name="captain" required>
+            {% for captain_id, captain in captains.items() %}
+                <option value="{{ captain_id }}" {% if captain_id == report.captain %}selected{% endif %}>
+                    {{ captain.full_name }}
+                </option>
+            {% endfor %}
+        </select>
+        <br>
+
+        <label for="fishermen">Рыболовы:</label>
+        <select id="fishermen" name="fishermen" multiple required style="width: 200px;">
+            {% for fisherman_id, fisherman in fishermen.items() %}
+                <option value="{{ fisherman_id }}" {% if fisherman_id in report.fishermen %}selected{% endif %}>
+                    {{ fisherman.full_name }}
+                </option>
+            {% endfor %}
+        </select>
+        <br>
+
+        <label for="ship">Корабль:</label>
+        <select id="ship" name="ship" required>
+            {% for ship_id, ship in ships.items() %}
+                <option value="{{ ship_id }}" {% if ship_id == report.ship %}selected{% endif %}>
+                    {{ ship.name }}
+                </option>
+            {% endfor %}
+        </select>
+        <br>
+
+        <label for="fishes">Рыбы и их веса:</label>
+        <div id="fish_weights">
+            {% for catch in report.fish_catches %}
+                <div>
+                    <select name="fishes" required>
+                        {% for fish_id, fish in catches.items() %}
+                            <option value="{{ fish_id }}" {% if fish_id == catch.fish %}selected{% endif %}>
+                                {{ fish.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <input type="number" name="weights" placeholder="Вес" required value="{{ catch.weight }}">
+                </div>
+            {% endfor %}
+        </div>
+        <button type="button" onclick="addFishWeight()">Добавить рыбу</button>
+        <br>
+
+        <label for="start_date">Дата начала:</label>
+        <input type="date" id="start_date" name="start_date" value="{{ report.start_date }}" required>
+        <br>
+
+        <label for="end_date">Дата завершения:</label>
+        <input type="date" id="end_date" name="end_date" value="{{ report.end_date }}" required>
+        <br>
+
+        <label for="weather_conditions">Условия погоды:</label>
+        <select id="weather_conditions" name="weather_conditions" required>
+            {% for condition_id, condition in weather_conditions.items() %}
+                <option value="{{ condition_id }}" {% if condition_id == report.weather_conditions %}selected{% endif %}>
+                    {{ condition.name }}
+                </option>
+            {% endfor %}
+        </select>
+        <br>
+
+        <button type="submit">Сохранить изменения</button>
+    </form>
+
+    <script>
+        function addFishWeight() {
+            const fishWeightsDiv = document.getElementById('fish_weights');
+            const newFishWeightDiv = document.createElement('div');
+
+            newFishWeightDiv.innerHTML = `
+                <select name="fishes" required>
+                    {% for fish_id, fish in catches.items() %}
+                        <option value="{{ fish_id }}">{{ fish.name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="number" name="weights" placeholder="Вес" required>
+            `;
+
+            fishWeightsDiv.appendChild(newFishWeightDiv);
+        }
+    </script>
+</body>
+</html>
+

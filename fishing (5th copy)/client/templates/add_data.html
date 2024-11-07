@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавление данных</title>
+    <a href="{{ url_for('index') }}">На главную</a>
+</head>
+<body>
+    <h1>Добавление данных</h1>
+    <form method="POST">
+        <h2>Добавить корабль</h2>
+        <input type="text" name="name" placeholder="Название корабля" required>
+        <input type="hidden" name="type" value="ship">
+        <button type="submit">Добавить</button>
+    </form>
+
+    <form method="POST">
+        <h2>Добавить рыбу</h2>
+        <input type="text" name="name" placeholder="Название рыбы" required>
+        <input type="hidden" name="type" value="fish">
+        <button type="submit">Добавить</button>
+    </form>
+
+    <form method="POST">
+        <h2>Добавить условия погоды</h2>
+        <input type="text" name="name" placeholder="Условия погоды" required>
+        <input type="hidden" name="type" value="weather_condition">
+        <button type="submit">Добавить</button>
+    </form>
+
+    <h2>Существующие корабли</h2>
+    <table>
+        <tr>
+            <th>Название</th>
+            <th>Действия</th>
+        </tr>
+        {% for ship in ships %}
+        <tr>
+            <td>{{ ship.name }}</td>
+            <td>
+                <a href="{{ url_for('edit_ship', ship_id=ship.id) }}">Редактировать</a>
+                <form action="{{ url_for('delete_ship', ship_id=ship.id) }}" method="POST" style="display:inline;">
+                    <button type="submit">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Существующие рыбы</h2>
+    <table>
+        <tr>
+            <th>Название</th>
+            <th>Действия</th>
+        </tr>
+        {% for fish in fish %}
+        <tr>
+            <td>{{ fish.name }}</td>
+            <td>
+                <a href="{{ url_for('edit_fish', fish_id=fish.id) }}">Редактировать</a>
+                <form action="{{ url_for('delete_fish', fish_id=fish.id) }}" method="POST" style="display:inline;">
+                    <button type="submit">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Существующие условия погоды</h2>
+    <table>
+        <tr>
+            <th>Название</th>
+            <th>Действия</th>
+        </tr>
+        {% for condition in weather_conditions %}
+        <tr>
+            <td>{{ condition.name }}</td>
+            <td>
+                <a href="{{ url_for('edit_weather_condition', condition_id=condition.id) }}">Редактировать</a>
+                <form action="{{ url_for('delete_weather_condition', condition_id=condition.id) }}" method="POST" style="display:inline;">
+                    <button type="submit">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
+

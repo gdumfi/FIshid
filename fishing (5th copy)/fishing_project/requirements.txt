@@ -1,0 +1,5 @@
+Django>=4.0,<5.0
+djangorestframework>=3.14  # для создания REST API
+djangorestframework-simplejwt>=5.2  # для аутентификации с использованием JWT
+django-filter>=23.1  # для фильтрации запросов в Django REST Framework
+psycopg2-binary>=2.9  # для подключения к базе данных PostgreSQL
