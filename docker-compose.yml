@@ -1,0 +1,56 @@
+version: '3.11'
+
+services:
+  django:
+    build:
+      context: ./fishing_project
+      dockerfile: Dockerfile-django
+    container_name: django-server
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./fishing_project:/app
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_NAME=fishing_reports_db
+      - DATABASE_USER=fishing_user
+      - DATABASE_PASSWORD=strongpassword
+    depends_on:
+      - db
+    networks:
+      - backend
+
+  flask:
+    build:
+      context: ./client
+      dockerfile: Dockerfile-flask
+    container_name: flask-client
+    ports:
+      - "5000:5000"
+    environment:
+      DJANGO_API_URL: http://django-server:8000/api/  # Добавьте /api/, если это необходимо для доступа
+    depends_on:
+      - django
+    networks:
+      - backend
+
+  db:
+    image: postgres:13
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: fishing_reports_db
+      POSTGRES_USER: fishing_user
+      POSTGRES_PASSWORD: strongpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d 
+    networks:
+      - backend
+
+networks:
+  backend:
+
+volumes:
+  postgres_data:

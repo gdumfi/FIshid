@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рыболовы</title>
+</head>
+<body>
+    <h1>Список рыбаков</h1>
+    <a href="{{ url_for('index') }}">На главную</a>
+
+    <h2>Добавить нового рыбака</h2>
+    {% if error %}
+        <div style="color: red;">{{ error }}</div>
+    {% endif %}
+    <form method="POST">
+        <label for="full_name">ФИО:</label>
+        <input type="text" id="full_name" name="full_name" required>
+        <br>
+        <button type="submit">Добавить</button>
+    </form>
+
+    <h2>Существующие рыбаки</h2>
+    <ul>
+        {% if fishermen.results|length == 0 %}  <!-- Проверка на пустой список -->
+            <li>Нет рыбаков.</li>
+        {% else %}
+            {% for fisherman in fishermen.results %}
+                <li>
+                    <a href="{{ url_for('fisherman_reports', fisherman_id=fisherman.id) }}">
+                        {{ fisherman.full_name }}
+                    </a>
+                    <a href="{{ url_for('edit_fisherman', fisherman_id=fisherman.id) }}">Редактировать</a>
+                    <form action="{{ url_for('delete_fisherman', fisherman_id=fisherman.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Вы уверены, что хотите удалить этого рыбака?');">
+                        <button type="submit">Удалить</button>
+                    </form>
+                </li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+</body>
+</html>
+

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отчеты рыболова</title>
+</head>
+<body>
+    <h1>Отчеты рыболова</h1>
+    <a href="{{ url_for('get_fishermen') }}">Назад к списку рыбаков</a>
+
+    {% if reports|length == 0 %}
+        <p>Нет отчетов для данного рыболова.</p>
+    {% else %}
+        <ul>
+            {% for report in reports %}
+                <li>
+                    <a href="{{ url_for('report_detail', report_id=report.id) }}">
+                        Отчет #{{ report.id }} - {{ report.start_date }} - {{ report.end_date }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
+
