@@ -2,6 +2,7 @@ version: '3.11'
 
 services:
   django:
+    image: gdumfi/django-server:latest
     build:
       context: ./fishing_project
       dockerfile: Dockerfile-django
@@ -21,6 +22,7 @@ services:
       - backend
 
   flask:
+    image: gdumfi/flask-client:latest
     build:
       context: ./client
       dockerfile: Dockerfile-flask
@@ -28,7 +30,7 @@ services:
     ports:
       - "5000:5000"
     environment:
-      DJANGO_API_URL: http://django-server:8000/api/  # Добавьте /api/, если это необходимо для доступа
+      - DJANGO_API_URL=http://django-server:8000/api/
     depends_on:
       - django
     networks:
@@ -40,12 +42,12 @@ services:
     environment:
       POSTGRES_DB: fishing_reports_db
       POSTGRES_USER: fishing_user
-      POSTGRES_PASSWORD: strongpassword
+      POSTGRES_PASSWORD=strongpassword
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init:/docker-entrypoint-initdb.d 
+      - ./init:/docker-entrypoint-initdb.d
     networks:
       - backend
 
