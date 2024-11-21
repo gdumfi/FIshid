@@ -42,7 +42,7 @@ services:
     environment:
       POSTGRES_DB: fishing_reports_db
       POSTGRES_USER: fishing_user
-      POSTGRES_PASSWORD=strongpassword
+      POSTGRES_PASSWORD: strongpassword
     ports:
       - "5432:5432"
     volumes:
