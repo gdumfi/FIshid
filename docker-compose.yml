@@ -63,7 +63,6 @@ services:
     command: python3 -m unittest discover tests/
     networks:
       - backend
-    # Этот сервис запускает тесты и сразу завершает работу
 
 networks:
   backend:

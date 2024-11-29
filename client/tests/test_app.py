@@ -175,6 +175,27 @@ class FlaskTestCase(unittest.TestCase):
             
             # Проверяем, что происходит редирект после удаления корабля
             self.assertEqual(response.status_code, 302)
+    
+    # Новый тест для удаления рыбы с ошибкой
+    @patch('requests.delete')
+    def test_delete_fish_with_error(self, mock_delete):
+        logger.info('Starting test_delete_fish_with_error')
+
+        # Мокируем неудачный ответ от API (например, ошибка 401, токен не найден)
+        mock_response = MagicMock()
+        mock_response.ok = False
+        mock_response.status_code = 401  # Ошибка авторизации
+        mock_delete.return_value = mock_response
+        logger.debug('Mocked DELETE response for deleting fish: %s', mock_response.status_code)
+
+        with app.test_client() as client:
+            # Пытаемся отправить запрос на удаление рыбы
+            response = client.post('/fish/delete/1')
+            logger.debug('POST /fish/delete/1 response status: %d', response.status_code)
+
+            # Проверяем, что функция возвращает неправильный ответ, например, 500
+            self.assertEqual(response.status_code, 500)
+            self.assertIn(b'Something went wrong', response.data)
 
 if __name__ == '__main__':
     unittest.main()
