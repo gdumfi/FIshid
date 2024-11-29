@@ -51,6 +51,20 @@ services:
     networks:
       - backend
 
+  test:
+    build:
+      context: ./client
+      dockerfile: Dockerfile-flask
+    container_name: flask-client-test
+    environment:
+      - DJANGO_API_URL=http://django-server:8000/api/
+    depends_on:
+      - django
+    command: python3 -m unittest discover tests/
+    networks:
+      - backend
+    # Этот сервис запускает тесты и сразу завершает работу
+
 networks:
   backend:
 
