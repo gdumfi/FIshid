@@ -2,27 +2,13 @@ FROM python:3.11
 
 WORKDIR /app
 
-# Копируем и устанавливаем зависимости
 COPY requirements.txt /app/
-RUN pip install --upgrade pip && pip install -r requirements.txt || true  # Команда не остановит сборку
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . /app
 COPY wait-for-it.sh /app/wait-for-it.sh
-RUN chmod +x /app/wait-for-it.sh || true  # Команда не остановит сборку
-
-# Для запуска FLAKE8 (с игнорированием ошибок)
-RUN pip install flake8 || true
-RUN flake8 /app/fishing_project || true  # Команда не остановит сборку
-
-# Для Bandit (с игнорированием ошибок)
-RUN pip install bandit || true
-RUN bandit -r /app/fishing_project || true  # Команда не остановит сборку
-
-# Для TruffleHog (с игнорированием ошибок)
-RUN pip install trufflehog || true
-RUN trufflehog --max_depth 50 --regex --json https://github.com/gdumfi/FIshid || true  # Команда не остановит сборку
+RUN chmod +x /app/wait-for-it.sh
 
 EXPOSE 8000
 
-# Основная команда запуска
 CMD ["/app/wait-for-it.sh", "db:5432", "--", "python", "manage.py", "runserver", "0.0.0.0:8000"]
