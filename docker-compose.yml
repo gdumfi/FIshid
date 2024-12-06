@@ -28,7 +28,7 @@ services:
       dockerfile: Dockerfile-flask
     container_name: flask-client
     ports:
-      - "5000:5000"
+      - "5001:5000"
     environment:
       - DJANGO_API_URL=http://django-server:8000/api/
     depends_on:
