@@ -1,5 +1,3 @@
-version: '3.11'
-
 services:
   django:
     image: gdumfi/django-server:latest
