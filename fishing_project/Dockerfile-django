@@ -8,8 +8,9 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 COPY . /app
 COPY wait-for-it.sh /app/wait-for-it.sh
 RUN chmod +x /app/wait-for-it.sh
+RUN which bash  # Проверка наличия bash
 RUN ls -l /app/wait-for-it.sh  # Для отладки
 
 EXPOSE 8000
 
-CMD ["/app/wait-for-it.sh", "db:5432", "--", "python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["bash", "/app/wait-for-it.sh", "db:5432", "--", "python", "manage.py", "runserver", "0.0.0.0:8000"]
