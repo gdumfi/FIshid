@@ -1,9 +1,11 @@
+version: "3.9"
+
 services:
   django:
-    image: gdumfi/django-server:latest
     build:
       context: ./fishing_project
       dockerfile: Dockerfile-django
+    image: gdumfi/django-server:latest
     container_name: django-server
     ports:
       - "8000:8000"
@@ -20,10 +22,10 @@ services:
       - backend
 
   flask:
-    image: gdumfi/flask-client:latest
     build:
       context: ./client
       dockerfile: Dockerfile-flask
+    image: gdumfi/flask-client:latest
     container_name: flask-client
     ports:
       - "5001:5000"
@@ -64,6 +66,7 @@ services:
 
 networks:
   backend:
+    driver: bridge
 
 volumes:
   postgres_data:
