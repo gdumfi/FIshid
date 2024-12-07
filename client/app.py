@@ -586,6 +586,20 @@ def delete_fish(fish_id):
     else:
         return handle_error(response)
 
+@app.route('/fish/delete/<int:fish_id>', methods=['POST'])
+def delete_fish_with_error(fish_id):
+    # Нарочно убираем получение токена из сессии, чтобы возникла ошибка
+    token = None  # Плохая практика, токен не будет найден
+    headers = {'Authorization': f'Bearer {token}'}  # Здесь будет None, что вызовет ошибку
+
+    response = requests.delete(f"{API_URL}fish/{fish_id}/", headers=headers)
+
+    if response.ok:
+        return redirect(url_for('add_data'))
+    else:
+        # Плохое сообщение об ошибке, не обрабатывается корректно
+        return "Something went wrong", 500
+
 # Аналогично для погодных условий
 @app.route('/weather_condition/edit/<int:condition_id>', methods=['GET', 'POST'])
 def edit_weather_condition(condition_id):
@@ -628,5 +642,5 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5001)
 

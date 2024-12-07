@@ -1,11 +1,9 @@
-version: '3.11'
-
 services:
   django:
-    image: gdumfi/django-server:latest
     build:
       context: ./fishing_project
       dockerfile: Dockerfile-django
+    image: gdumfi/django-server:latest
     container_name: django-server
     ports:
       - "8000:8000"
@@ -22,13 +20,13 @@ services:
       - backend
 
   flask:
-    image: gdumfi/flask-client:latest
     build:
       context: ./client
       dockerfile: Dockerfile-flask
+    image: gdumfi/flask-client:latest
     container_name: flask-client
     ports:
-      - "5000:5000"
+      - "5001:5001"
     environment:
       - DJANGO_API_URL=http://django-server:8000/api/
     depends_on:
@@ -51,8 +49,22 @@ services:
     networks:
       - backend
 
+  test:
+    build:
+      context: ./client
+      dockerfile: Dockerfile-flask
+    container_name: flask-client-test
+    environment:
+      - DJANGO_API_URL=http://django-server:8000/api/
+    depends_on:
+      - django
+    command: python3 -m unittest discover tests/
+    networks:
+      - backend
+
 networks:
   backend:
+    driver: bridge
 
 volumes:
   postgres_data:
